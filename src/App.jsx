@@ -3,13 +3,7 @@ import reykjavík from './constants/index.js'
 import './App.css'
 
 const App = () => {
-  const [prufa, setprufa] = useState(reykjavík);
-  const [obj, setobj] = useState({
-    id: reykjavík.id,
-    nafn: reykjavík.nafn,
-    himilisfang: reykjavík.himilisfang,
-    bæjarfélagsnúmer: reykjavík.bæjarfélagsnúmer,
-  });
+  const [array, setArray] = useState(reykjavík);
   const [bæjarfélafg, setBæjarfélafg] = useState('');
   const nyttArray = [
     {
@@ -17,33 +11,54 @@ const App = () => {
       nafn: 'Harpa',
       himilisfang: 'Austurbakka',
       bæjarfélagsnúmer: 101,
+      valið: false,
     },
     {
       id: 4,
       nafn: 'Laugardalslaug',
       himilisfang: 'Sundlaugarvegur',
       bæjarfélagsnúmer: 101,
+      valið: false,
     }
   ]
 
-  const handleclick = (staður,) => {
-    const newObj = [...prufa, {
-      id: prufa.id,
-      nafn: prufa.nafn,
-      himilisfang: obj.himilisfang,
-      bæjarfélagsnúmer: obj.bæjarfélagsnúmer,
-      valið: true,
-    }]
-    setobj(newObj);
-    console.log(obj);
-    console.log(newObj);
-    console.log(staður);
+  const handleclick = () => {
+    const nyttOBJ = {
+      id: 5,
+      nafn: 'Kringlan',
+      himilisfang: 'Kringlumýrarbraut',
+      bæjarfélagsnúmer: 103,
+    }
+    setArray([...array, nyttOBJ])
+    console.log(array);
+  }
+
+  const handleEyða = (id) => {
+    const nyttArray = array.filter((staður) => staður.id !== id);
+    setArray(nyttArray);
+
+    console.log(id)
+  }
+
+  const handleVal = (id) => {
+    setArray(array.map(ary => {
+      if (ary.id === id) {
+        return { ...ary, valið: true }
+      } else {
+        return ary
+      }
+    }))
+  }
+
+  const handleSort = () => {
+    const sortedArray = [...array].sort((a, b) => b.valið - a.valið);
+    setArray(sortedArray);
   }
 
   useEffect(() => {
     console.log(bæjarfélafg);
     if (bæjarfélafg === 'eb') {
-      setprufa(nyttArray);
+      setArray(nyttArray);
     }
   }, [bæjarfélafg])
 
@@ -70,12 +85,14 @@ const App = () => {
         <div>Staðir valdir</div>
       </div>
       <div className='Navbar'>
-        <button onClick={() => console.log(reykjavík)}>Hér</button>
-        {prufa.map((staður) => (
+        <button onClick={handleSort}>Sort</button>
+        <button onClick={handleclick}>Hér</button>
+        {array.map((staður) => (
           <div className='staðir-div' key={staður.id}>
-            <p onClick={() => handleclick(staður.id)} className='item-a'>{staður.nafn}</p>
+            <p onClick={() => handleVal(staður.id)} className='item-a'>{staður.nafn}</p>
             <p className='item-b'>{staður.himilisfang}</p>
             <p className='item-c'>{staður.bæjarfélagsnúmer}</p>
+            <button onClick={() => handleEyða(staður.id)}>Eyða</button>
           </div>
         ))}
       </div>
